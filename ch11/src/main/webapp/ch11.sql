@@ -14,3 +14,7 @@ create table board (
 	reg_date date not null, -- 작성일
 	del char(1) default 'n'
 );
+
+update board set readcount = 70 where num=3;
+
+
