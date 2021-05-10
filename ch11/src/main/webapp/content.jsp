@@ -3,7 +3,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html><html><head><meta charset="UTF-8">
 <title>Insert title here</title>
-<style type="text/css">@import url("common.css");</style></head><body>
 <%  String pageNum = request.getParameter("pageNum");
 	int num = Integer.parseInt(request.getParameter("num"));
 	BoardDao bd = BoardDao.getInstance();
@@ -11,6 +10,13 @@
 	Board board = bd.select(num); 
 	pageContext.setAttribute("board", board);
 %>
+<style type="text/css">@import url("common.css");</style>
+<script type="text/javascript" src="js/jquery.js"></script>
+<script type="text/javascript">
+	$(function() {
+		$('#disp').load('list.jsp?pageNum=<%=pageNum%>');
+	});
+</script></head><body>
 <table><caption>게시글 상세 보기</caption>
 	<tr><th width="100">제목</th><td>${board.subject }</td></tr>
 	<tr><th>작성자</th><td>${board.writer }</td></tr>
@@ -20,6 +26,7 @@
 	<tr><th>이메일</th><td>${board.email }</td></tr>
 	<tr><th>내용</th><td><pre>${board.content }</pre></td></tr>
 </table>
+<div id="disp"></div>
 <div align="center"><br>
 	<button onclick="location.href='updateForm.jsp?num=<%=num%>&pageNum=<%=pageNum%>'">수정</button> 
 	<button onclick="location.href='deleteForm.jsp?num=<%=num%>&pageNum=<%=pageNum%>'">삭제</button> 

@@ -33,8 +33,11 @@ public class BoardDao {
 //		String sql = "select * from board order by num desc";
 //      mysql
 //      String sql = "select * from board order by num desc limit startRow, 10'		
+//		String sql = "select * from (select rowNum rn, a.* from "
+//				+ "(select * from board order by num desc) a)"
+//				+ "    where rn between ? and ?";
 		String sql = "select * from (select rowNum rn, a.* from "
-				+ "(select * from board order by num desc) a)"
+				+ "(select * from board order by ref desc, re_step) a)"
 				+ "    where rn between ? and ?";
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -78,13 +81,23 @@ public class BoardDao {
 		String sql="insert into board values(?,?,?,?,?,0,?,?,?,?,?,sysdate,'n')";
 		// 가장 큰 num을 가지고 와서 1을 더하면 null이면 1
 		String sql2 = "select nvl(max(num),0) + 1 from board";
+		String sqlUp = "update board set re_step = re_step+1 where ref=? and re_step > ?";
 		try {
 			pstmt = conn.prepareStatement(sql2);
 			rs = pstmt.executeQuery();
 			rs.next();
 			int number = rs.getInt(1); // 가장 큰 num에 1을 더한 값
-			board.setRef(number);
 			pstmt.close();
+			if (board.getNum() != 0) { // 답변글
+				pstmt = conn.prepareStatement(sqlUp);
+				pstmt.setInt(1, board.getRef());
+				pstmt.setInt(2, board.getRe_step());
+				pstmt.executeUpdate();
+				pstmt.close();
+				board.setRe_step(board.getRe_step()+1);
+				board.setRe_level(board.getRe_level()+1);
+			} else board.setRef(number); // 답변글 아니면 ref와 num은 같다
+			
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, number);
 			pstmt.setString(2, board.getWriter());

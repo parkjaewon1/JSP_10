@@ -17,6 +17,8 @@
 	// 끝번호 	시작번호 + 페이지당개수 - 1			
 	int endRow = startRow + ROW_PER_PAGE - 1;
 	List<Board> list = bd.list(startRow, endRow);
+	// 번호를 보기 좋기 정열
+	int number = total - startRow + 1;
 	int totalPage = (int)Math.ceil((double)total/ROW_PER_PAGE);   // 총 페이지 수
 	// 시작페이지	현재페이지 - (현재페이지 - 1)%10			
 	int startPage = currentPage - (currentPage - 1)%PAGE_PER_BLOCK;
@@ -35,12 +37,19 @@
 </c:if>
 <c:if test="${not empty list }">
 	<c:forEach var="board" items="${list }">
-		<tr><td>${board.num }</td>
+		<tr><td><%=number--%><%-- ${board.num } --%></td>
 		<c:if test="${board.del == 'y' }">
 			<th colspan="5">삭제된 게시글 입니다</th>
 		</c:if>
 		<c:if test="${board.del != 'y' }">
-			<td title="${board.content }"><a href="content.jsp?num=${board.num}&pageNum=<%=currentPage%>">
+			<td title="${board.content }">
+				<!-- 답변글 -->
+				<c:if test="${board.re_level > 0 }">
+					<img alt="" src="images/level.gif" height="5" 
+						width="${board.re_level*10 }">
+					<img alt="" src="images/re.gif">
+				</c:if>
+				<a href="content.jsp?num=${board.num}&pageNum=<%=currentPage%>">
 				${board.subject}</a>
 				<c:if test="${board.readcount > 50 }">
 					<img alt="" src="images/hot.gif">
@@ -65,7 +74,7 @@
 	<% if (endPage < totalPage) { %>
 		<button onclick="location.href='list.jsp?pageNum=<%=endPage + 1%>'">다음</button>
 	<% } %>
-	<br><button onclick="location.href='writeForm.jsp?pageNum=1'">글쓰기</button>
+	<br><button onclick="location.href='writeForm.jsp?num=0&pageNum=1'">글쓰기</button>
 </div>
 </body>
 </html>

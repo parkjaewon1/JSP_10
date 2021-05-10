@@ -10,9 +10,20 @@
 			frm.password.value = "";			return false;		}
 	}
 </script></head><body>
-<%	int num = 0, ref = 0, re_level = 0, re_step = 0; %>
+<%	int num = 0, ref = 0, re_level = 0, re_step = 0;
+	String pageNum = request.getParameter("pageNum");
+	num = Integer.parseInt(request.getParameter("num"));
+	if (num != 0) { // 0이면 처음 글쓰기 0이 아니면 답변글
+		BoardDao bd = BoardDao.getInstance();
+		Board board = bd.select(num);
+		ref = board.getRef();
+		re_step  = board.getRe_step();
+		re_level = board.getRe_level();
+	}
+%>
 <form action="write.jsp" method="post" name="frm" onsubmit="return chk()">
 	<input type="hidden" name="num" value="<%=num%>">
+	<input type="hidden" name="pageNum" value="<%=pageNum%>">
 	<!-- 답변글떄 사용 -->
 	<input type="hidden" name="ref" value="<%=ref%>">
 	<input type="hidden" name="re_level" value="<%=re_level%>">

@@ -6,6 +6,7 @@
 <jsp:useBean id="board" class="ch11.Board"></jsp:useBean>
 <jsp:setProperty property="*" name="board"/>
 <%
+	String pageNum = request.getParameter("pageNum");
 	String ip = request.getRemoteAddr(); // 글쓰는 사람이 사용하는 컴퓨터의 ip번호
 	board.setIp(ip);
 	BoardDao bd = BoardDao.getInstance();
@@ -14,7 +15,7 @@
 %>
 <script type="text/javascript">
 	alert("입력 성공");
-	location.href = "list.jsp";
+	location.href = "list.jsp?pageNum=<%=pageNum%>";
 </script>
 <%  } else { %>
 <script type="text/javascript">
